@@ -1,0 +1,20 @@
+<!-- Cargar archivos estaticos -->
+{% load static %}
+
+<!-- Bloque css -->
+{% block css%}
+<link rel="stylesheet" href="{% static 'manage_post/comments/css/comments.css' %}">
+{% endblock css%}
+
+<div class="form-content">
+    <form method="POST" class="form-general comments">  
+        <!-- Agregar t0ken -->
+        {% csrf_token %}
+        <ul>
+            <!-- Obtener formulario -->
+            {{ form.as_ul }} 
+        </ul>
+
+        <input type="submit" value="Comentar" class="btn-submit btn-comment">
+    </form>
+</div>

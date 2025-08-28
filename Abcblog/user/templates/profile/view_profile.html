@@ -1,0 +1,76 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block css %}
+<link href="{% static 'user/css/style_user.css' %}" rel="stylesheet"/>
+<link rel="stylesheet" href="{% static 'manage_post/categories/css/article_category.css' %}">
+{% endblock css %}
+
+{% block title %} Perfil de {{ user.username }} {% endblock title %}
+
+{% block content %}
+
+{% if user.profile %}
+<div class="profile-content">
+	 <div class="user-details">
+		<h2 style="text-align: center;">Perfil de {{ user.username }}</h2>
+		<ul class="user-info">
+			{% if user.profile.photo %}
+			<img src="{{ user.profile.photo.url }}" alt="Profile" class="img-profile" />
+			{% else %}
+			<img src="{% static 'base/image/Default/default-user.png' %}" alt="Profile" class="img-profile" />
+			{% endif %}
+			<div class="user-details">
+				<h2>Nombre completo: {{ user.full_name|default:user.username }}</h2>
+				<p><strong>Profesión:</strong> {{ user.profile.profesion|default:"No especificada" }}</p>
+				<p><strong>Correo Electrónico:</strong> {{ user.email }}</p>
+			    <p><strong>Acerca de:</strong> {{ user.profile.about|default:"No hay biografía disponible." }}</p>
+
+				<ul class="social-links">
+					{% if user.profile.facebook %}<li><a href="{{ user.profile.facebook }}">Facebook</a></li>{% endif %}
+				    {% if user.profile.twitter %}<li><a href="{{ user.profile.twitter }}">Twitter</a></li>{% endif %}
+					{% if user.profile.linkedin %}<li><a href="{{ user.profile.linkedin }}">LinkedIn</a></li>{% endif %}
+				</ul>
+
+				<p class="join-date"><strong>Miembro desde:</strong> {{ user.date_joined|date:"d/m/Y" }}</p>
+			</div>
+		<hr>
+		</ul>
+	</div>
+	
+	<h2 class="title" style="text-align: center;">Publicaciones de {{ user.username }}</h2>
+	<hr>
+
+	<div class="article-container">
+		{% if posts %}
+		<ul>
+			{% for article in posts %}
+			<li>
+				<article class="article">
+					<img src="{{ article.image.url }}" alt="imagen" class="post-image-img">
+					<div class="card-body">
+						<h3 class="title">{{ article.title|truncatewords:"11" }}</h3>
+						<div class="post-introduction line">
+							<p>{{ article.introducción|truncatewords:"20" }}</p>
+						</div>
+						<p>{{ post.content|truncatechars:"150" }}</p>
+						<a href="{% url 'post' article.slug %}">Leer más</a>
+					</div>
+				</article>
+			</li>
+			{% endfor %}
+		</ul>
+		{% else %}
+		<p>No hay publicaciones disponibles.</p>
+		{% endif %}
+	</div>
+</div>
+{% else %}
+{% if request.user == user %}
+<h2 class="alert-session">El usuario no ha creado un perfil <a href="{% url 'edit_profile' %}">Clic aqui</a> para crear uno nuevo</h2>
+{% else %}
+<h2 class="alert-session">El usuario no ha creado un perfil</h2>
+{% endif %}
+{% endif %}
+{% endblock content %}
